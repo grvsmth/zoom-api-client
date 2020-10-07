@@ -54,7 +54,8 @@ def fetch(config, endpoint):
 response = fetch(API_CONFIG, API_ENDPOINT["users"].format(page_size=PAGE_SIZE))
 print(response["users"])
 
-test_index = 8
+# test_index = randint(0, PAGE_SIZE-1)
+test_index = 25
 test_user = response["users"][test_index]
 
 print(

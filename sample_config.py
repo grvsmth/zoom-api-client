@@ -8,5 +8,5 @@ API_CONFIG = {
 
 API_ENDPOINT = {
     "users": "/v2/users?status=active&page_size={page_size}&page_number=1",
-    "meetings": "/v2/users/{userId}/meetings"
+    "meetings": "/v2/report/users/{userId}/meetings"
 }
