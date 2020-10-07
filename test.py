@@ -3,29 +3,39 @@ Test script for accessing the Zoom API
 """
 
 from http.client import HTTPSConnection
-from json import dumps
+from json import loads, dumps
+from random import randint
 from time import time
 
 import jwt
-import config
+from config import API_CONFIG, API_ENDPOINT
 
 JWT_ALGORITHM = 'HS256'
+PAGE_SIZE = 30
 
+"""
+Create a new Javascript Web Token (JWT) for authenticating to the
+Zoom API servers, based on the information in a config dict
+"""
 def makeJWT(config):
-    exp = int(time()) + config.API_EXPIRES_IN
+    exp = int(time()) + config["jwt_expires_in"]
 
     payload = {
-        "iss": config.API_KEY,
+        "iss": config["key"],
         "exp": exp
     }
 
-    encoded = jwt.encode(payload, config.API_SECRET, algorithm=JWT_ALGORITHM)
+    encoded = jwt.encode(payload, config["secret"], algorithm=JWT_ALGORITHM)
 
     return(encoded.decode('utf-8'))
 
-def fetch(endpoint):
+
+"""
+Given a config dict (with a hostname and JWT info) an API endpoint, fetch the 
+"""
+def fetch(config, endpoint):
     jwt = makeJWT(config)
-    conn = HTTPSConnection(config.API_HOST)
+    conn = HTTPSConnection(config["host"])
 
     headers = {
         'authorization': "Bearer " + jwt,
@@ -37,16 +47,25 @@ def fetch(endpoint):
     res = conn.getresponse()
     data = res.read()
 
-    return data.decode("utf-8")
+    return loads(data.decode("utf-8"))
 
-users = fetch(config.USERS_ENDPOINT)
 
-print(users)
 
-userId = "-5VUc4eUTliii3rAVfzeIw"
+response = fetch(API_CONFIG, API_ENDPOINT["users"].format(page_size=PAGE_SIZE))
+print(response["users"])
 
-meetings_endpoint = config.MEETINGS_ENDPOINT.format(userId=userId)
+test_index = 8
+test_user = response["users"][test_index]
 
-meetings = fetch(meetings_endpoint)
+print(
+    "Showing meetings for user {test_index}: {first_name} {last_name}".format(
+        test_index=test_index,
+        first_name=test_user["first_name"],
+        last_name=test_user["last_name"]
+    )
+)
 
+meetings_endpoint = API_ENDPOINT["meetings"].format(userId=test_user["id"])
+
+meetings = fetch(API_CONFIG, meetings_endpoint)
 print(meetings)

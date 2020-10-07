@@ -1,9 +1,12 @@
 
-API_HOST = "api.zoom.us"
-API_KEY = ""
-API_SECRET = ""
-API_EXPIRES_IN = 60
+API_CONFIG = {
+    "host": "api.zoom.us",
+    "key": "",
+    "secret": "",
+    "jwt_expires_in": 60
+}
 
-
-USERS_ENDPOINT = "/v2/users?status=active&page_size=30&page_number=1"
-MEETINGS_ENDPOINT = "/v2/users/{userId}/meetings"
+API_ENDPOINT = {
+    "users": "/v2/users?status=active&page_size={page_size}&page_number=1",
+    "meetings": "/v2/users/{userId}/meetings"
+}
