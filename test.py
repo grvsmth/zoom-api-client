@@ -50,10 +50,15 @@ def fetch(config, endpoint):
     return loads(data.decode("utf-8"))
 
 
+"""
+Example queries
+"""
 
+# Get a page of users
 response = fetch(API_CONFIG, API_ENDPOINT["users"].format(page_size=PAGE_SIZE))
 print(response["users"])
 
+# Get the meetings for a user
 # test_index = randint(0, PAGE_SIZE-1)
 test_index = 25
 test_user = response["users"][test_index]
@@ -67,6 +72,11 @@ print(
 )
 
 meetings_endpoint = API_ENDPOINT["meetings"].format(userId=test_user["id"])
+user_meetings = fetch(API_CONFIG, meetings_endpoint)
+print(user_meetings)
 
-meetings = fetch(API_CONFIG, meetings_endpoint)
-print(meetings)
+
+# Get a page of the daily meetings report
+meetings_report = fetch(API_CONFIG, API_ENDPOINT["dashboard_meetings"])
+
+print(meetings_report)
